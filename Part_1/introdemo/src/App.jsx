@@ -1,10 +1,11 @@
 const Hello = (props) => {
+  console.log(props)
   return (
-    <div>
+    <>
       <p>
-        Hello {props.name}, you are {props.age} years old
+        Hello {props.name}, you are {props.age} years old and your height is {props.height}
       </p>
-    </div>
+    </>
   )
 }
 
@@ -13,11 +14,11 @@ const App = () => {
   const age = 10
 
   return (
-    <div>
+    <>
       <h1>Greetings</h1>
-      <Hello name='Maya' age={26 + age} />
-      <Hello name={name} age={age}/>
-    </div>
+      <Hello name='Maya' age={26 + age} height={'5 feet 2'} />
+      <Hello name={name} age={age} height={0}/>
+    </>
   )
 }
 
