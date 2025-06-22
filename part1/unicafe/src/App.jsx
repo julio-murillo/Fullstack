@@ -1,51 +1,78 @@
 import { use, useState } from 'react'
 
-const Button = ({ onClick, text }) => <button onClick={onClick}>{text}
+const Button = ({ onClick, text }) => <button id={text} onClick={onClick}>{text}
 </button>
 
-const Display = ({text, value}) => <div>{text} {value}</div>
+const Stats = ({display, stats}) => {
+  if (display) {
+    return (
+      <div>
+        <h2>statistics</h2>
+          {Object.entries(stats).map(([key, value]) => (
+            <div key={key}> {key} {value} </div>
+          ))}
+      </div>
+    )
+  } else {
+    return (
+      <div>
+        <h2>No feedback has been provided yet!</h2>
+      </div>
+    )
+  }
+}
 
 const App = () => {
   // save clicks of each button to its own state
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
-  const [all, setAll] = useState(0)
-  const [avg, setAvg] = useState(0)
-  const [positive, setPositive] = useState(0)
+  const [stats, setStats] = useState(
+    {good: 0, 
+    neutral: 0, 
+    bad: 0, 
+    all: 0, 
+    avg: 0, 
+    positive: 0}
+  )
 
   const increaseGood = () => {
-    console.log('increasing, value before',good)
-    const updatedGood = good + 1
-    setGood(updatedGood)
-    const updatedAll = updatedGood + neutral + bad
-    setAll(updatedAll)
-    setAvg((updatedGood + (bad * -1)) / updatedAll)
-    setPositive((updatedGood/updatedAll*100)+'%')
+    const updatedGood = stats.good + 1
+    const updatedAll = updatedGood + stats.neutral + stats.bad
+    const newStats = {
+      ...stats, 
+      good: updatedGood,
+      all: updatedAll,
+      avg: (updatedGood + (stats.bad * -1)) / updatedAll,
+      positive: (updatedGood / updatedAll * 100) + '%'
+    }
+    setStats(newStats)
   }
-
+  
   const increaseNeutral = () => {
-    console.log('increasing, value before',neutral)
-    const updatedNeutral = neutral + 1
-    setNeutral(updatedNeutral)
-    const updatedAll = good + updatedNeutral + bad
-    setAll(updatedAll)
-    setAvg((good + (bad * -1)) / updatedAll)
-    setPositive((good/updatedAll*100)+'%')
+    const updatedNeutral = stats.neutral + 1
+    const updatedAll = stats.all + 1
+    const newStats = {
+      ...stats,
+      neutral: updatedNeutral,
+      all: updatedAll,
+      positive: (stats.good / updatedAll * 100) + '%'
+    }
+    setStats(newStats)
   }
 
   const increaseBad = () => {
-    console.log('increasing, value before',bad)
-    const updatedBad = bad + 1
-    setBad(updatedBad)
-    const updatedAll = good + neutral + updatedBad
-    setAll(updatedAll)
-    setAvg((good + (updatedBad * -1)) / updatedAll)
-    setPositive((good/updatedAll*100)+'%')
+    const updatedBad = stats.bad + 1
+    const updatedAll = stats.all + 1
+    const newStats = {
+      ...stats,
+      bad: updatedBad,
+      all: updatedAll,
+      avg: (stats.good + (updatedBad * -1)) / updatedAll,
+      positive: (stats.good / updatedAll * 100) + '%'
+    }
+    setStats(newStats)
   }
 
   return (
-    <div>
+    <>
       <h1>give feedback</h1>
       <Button 
         onClick={increaseGood}
@@ -59,32 +86,11 @@ const App = () => {
         onClick={increaseBad}
         text = 'bad'
       />
-      <h2>statistics</h2>
-      <Display
-        text='good'
-        value={good}
+      <Stats
+        display={stats.all}
+        stats={stats}
       />
-       <Display
-        text='neutral'
-        value={neutral}
-      />
-       <Display
-        text='bad'
-        value={bad}
-      />
-      <Display
-        text = 'all'
-        value = {all}
-      />
-      <Display
-      text = 'average'
-      value = {avg}
-      />
-      <Display
-      text='positive'
-      value = {positive}
-      />
-    </div>
+    </>
   )
 }
 
