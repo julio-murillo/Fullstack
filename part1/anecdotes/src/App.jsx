@@ -3,7 +3,8 @@ import { useState } from "react"
 const Button = ({text, action}) => 
   <button onClick={action}>{text}</button>
 
-const Diplay = ({text, value}) => <>
+const Diplay = ({header, text, value}) => <>
+  <h2>{header}</h2>
   <div>{text}</div>
   <div>has {value} {(value === 1) ? 'vote' : 'votes'}</div>
 </>
@@ -20,9 +21,9 @@ const App = () => {
     'The only way to go fast, is to go well.'
   ]
   const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
-  console.log ('Votes: ', votes) 
   const [selected, setSelected] = useState(0)
-
+  const [mostVoted, setMostVoted] = useState(0)
+  console.log ('Votes: ', votes)
   const getRandomInt = (max) => Math.floor(Math.random()*max)
 
   const selectAnecdote = () => {
@@ -34,11 +35,30 @@ const App = () => {
     const copy = [...votes]
     copy[selected] +=1
     setVotes(copy)
+    updateMostVoted()
+  }
+
+  const updateMostVoted = () => {
+    let temp = 0
+    let maxValue = votes[mostVoted]
+    console.log('index of most voted before', mostVoted)
+    console.log('most votes before',maxValue)
+
+    votes.forEach((value, index) => {
+      console.log('first value', value, 'first index', index)
+      if (value > maxValue) {
+        console.log('in the loop')
+        maxValue = value
+        temp = index
+      }})
+      console.log('index of most voted after', temp)
+      setMostVoted(temp)
   }
 
   return (
     <div>
       <Diplay
+        header={'Anecdote of the day'}
         text={anecdotes[selected]}
         value={votes[selected]}
       />
@@ -49,6 +69,11 @@ const App = () => {
       <Button
         action={selectAnecdote}
         text={'next anecdote'}
+      />
+      <Diplay
+        header={'Anecdote with most votes'}
+        text={anecdotes[mostVoted]}
+        value={votes[mostVoted]}
       />
     </div>
   )
