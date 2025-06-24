@@ -3,7 +3,7 @@ import { useState } from "react"
 const Button = ({text, action}) => 
   <button onClick={action}>{text}</button>
 
-const Diplay = ({header, text, value}) => <>
+const Display = ({header, text, value}) => <>
   <h2>{header}</h2>
   <div>{text}</div>
   <div>has {value} {(value === 1) ? 'vote' : 'votes'}</div>
@@ -33,31 +33,17 @@ const App = () => {
 
   const updateVotes = () => {
     const copy = [...votes]
-    copy[selected] +=1
+    copy[selected] += 1
     setVotes(copy)
-    updateMostVoted()
+    setMostVoted(updateMostVoted(mostVoted, selected, copy[selected]))
   }
 
-  const updateMostVoted = () => {
-    let temp = 0
-    let maxValue = votes[mostVoted]
-    console.log('index of most voted before', mostVoted)
-    console.log('most votes before',maxValue)
-
-    votes.forEach((value, index) => {
-      console.log('first value', value, 'first index', index)
-      if (value > maxValue) {
-        console.log('in the loop')
-        maxValue = value
-        temp = index
-      }})
-      console.log('index of most voted after', temp)
-      setMostVoted(temp)
-  }
+  const updateMostVoted = (mostVoted, selected, newVotes) => 
+    (votes[mostVoted] > newVotes) ? mostVoted : selected
 
   return (
     <div>
-      <Diplay
+      <Display
         header={'Anecdote of the day'}
         text={anecdotes[selected]}
         value={votes[selected]}
@@ -70,7 +56,7 @@ const App = () => {
         action={selectAnecdote}
         text={'next anecdote'}
       />
-      <Diplay
+      <Display
         header={'Anecdote with most votes'}
         text={anecdotes[mostVoted]}
         value={votes[mostVoted]}
