@@ -1,4 +1,4 @@
-//const Header = (props) => <h1>{props.course}</h1>
+import Course from "./components/Course"
 
 const Courses = ({courses}) => (
   <>
@@ -7,26 +7,6 @@ const Courses = ({courses}) => (
       {courses.map(course => 
         <Course key={course.id} course={course}/>)}
     </div>
-  </>
-)
-
-const Course = ({course}) => (
-  <>
-    <h2>{course.name}</h2>
-      {course.parts.map(part =>
-    <p key={part.id}>
-      {part.name} {part.exercises}
-    </p>
-    )}
-    <Total course={course}/>
-  </>
-)
-
-const Total = ({course}) => (
-  <>
-    <b>
-      total of {course.parts.reduce((accum, part) => accum + part.exercises,0)} exercises
-    </b>
   </>
 )
 
