@@ -21,58 +21,13 @@
       "important": false
     },
     {
-      "id": "582d",
-      "content": "a new note...",
-      "important": true
-    },
-    {
-      "id": "b555",
-      "content": "a new note...2",
-      "important": true
-    },
-    {
-      "id": "398b",
-      "content": "Test",
-      "important": true
-    },
-    {
       "id": "d032",
-      "content": "a new note...",
+      "content": "Shit happens",
       "important": true
-    },
-    {
-      "id": "65d7",
-      "content": "",
-      "important": false
-    },
-    {
-      "id": "dc62",
-      "content": "",
-      "important": false
     },
     {
       "id": "910d",
       "content": "To be or not to be",
-      "important": false
-    },
-    {
-      "id": "1716",
-      "content": "That is the question",
-      "important": false
-    },
-    {
-      "id": "947e",
-      "content": "That is the question",
-      "important": true
-    },
-    {
-      "id": "ecfe",
-      "content": "That is the question",
-      "important": false
-    },
-    {
-      "id": "eb96",
-      "content": "That is the question",
       "important": false
     },
     {
@@ -89,6 +44,11 @@
       "id": "20ca",
       "content": "Or maybe",
       "important": false
+    },
+    {
+      "id": "91d9",
+      "content": "Still Trying to add a good note",
+      "important": true
     }
   ]
 }
