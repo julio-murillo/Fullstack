@@ -18,7 +18,7 @@
     {
       "id": "68b0",
       "content": "a new note...",
-      "important": false
+      "important": true
     },
     {
       "id": "582d",
@@ -48,6 +48,11 @@
     {
       "id": "dc62",
       "content": "",
+      "important": true
+    },
+    {
+      "id": "910d",
+      "content": "To be or not to be",
       "important": true
     }
   ]
