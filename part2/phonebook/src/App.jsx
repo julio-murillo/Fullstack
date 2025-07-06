@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import Filter from "./components/Filter"
-import Persons from "./components/Persons"
 import PersonForm from "./components/PersonForm"
-import axios from "axios"
 import { useEffect } from 'react'
 import personService from './services/persons'
+import Person from './components/Person'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -24,7 +23,24 @@ const App = () => {
     event.preventDefault()
     //console.log('button clicked', event.target)
     if (persons.some(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
+      //alert(`${newName} is already added to phonebook`)
+      if (confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+        //console.log ('Value of newName ', newName)
+        //console.log ('Values of newNumber ', newNumber)
+        const personToUpdate = persons.find(person => person.name === newName)
+        //console.log ('Person to update ', personToUpdate)
+        const id = personToUpdate.id
+        //console.log ('ID value ', id)
+        const updatedPerson = {...personToUpdate, number: newNumber}
+
+        personService
+          .update(id, updatedPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id === id ? returnedPerson : person))
+          })
+          setNewName('')
+          setNewNumber('')
+      }
     } else {
       const personObject = {
         name: newName,
@@ -61,6 +77,19 @@ const App = () => {
     ? persons
     : persons.filter(person => person.name.toLocaleUpperCase().includes(filter.toUpperCase()))
 
+  const deletePersonWithId = (id) => {
+    //console.log(`person with id ${id} is being deleted`)
+    const person = persons.find(n => n.id === id)
+    if (confirm(`Delete ${person.name}?`)) {
+      personService
+        .remove(id)
+        .then(deleted => {
+            const remainingPersons = persons.filter(person => person.id !== deleted.id)
+            setPersons(remainingPersons)
+        })
+    }
+  }
+
   return(
     <>
       <h2>Phonebook</h2>
@@ -78,9 +107,12 @@ const App = () => {
         onButtonClick={addPerson}
       />
       <h3>Numbers</h3>
-      <Persons
-        persons={personsToShow}
-      />
+      <div>
+        {personsToShow.map(person => <Person key={person.id}
+          person={person}
+          deletePerson={() => deletePersonWithId(person.id)}
+        />)}
+      </div>
     </>
   )
 }

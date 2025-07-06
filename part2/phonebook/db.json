@@ -16,9 +16,9 @@
       "id": "3"
     },
     {
+      "id": "06e8",
       "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": "4"
+      "number": "39-23-6423122"
     },
     {
       "id": "b192",
@@ -38,7 +38,17 @@
     {
       "id": "1153",
       "name": "Alejandro Gomez",
-      "number": "62653800"
+      "number": "506 88390658"
+    },
+    {
+      "id": "a7d7",
+      "name": "Adrian Murillo",
+      "number": "506 87936363"
+    },
+    {
+      "id": "b243",
+      "name": "New name...",
+      "number": "00-00-0000002"
     }
   ]
 }
