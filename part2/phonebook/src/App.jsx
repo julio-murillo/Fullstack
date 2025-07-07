@@ -13,6 +13,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('00-00-0000000')
   const [filter, setFilter] = useState('')
   const [statusMessage, setStatusMessage] = useState({message: null, cssClass: 'success'})
+  const messageDuration = 3000
 
   useEffect(() => {
     personService
@@ -21,6 +22,39 @@ const App = () => {
         setPersons(initialPersons)
       })
   },[])
+
+  const handleNameChange = (event) => {
+    //console.log(event.target.value)
+    setNewName(event.target.value)
+  }
+
+  const handleNumberChange = (event) => {
+    setNewNumber(event.target.value)
+  }
+
+ 
+  const handleFilterChange = (event) => {
+    //console.log('filter:', event.target.value.toUpperCase())
+    setFilter(event.target.value)
+  }
+  
+
+  const personsToShow = (filter ==='')
+    ? persons
+    : persons.filter(person => person.name.toLocaleUpperCase().includes(filter.toUpperCase()))
+
+  const displayMessage = (message, cssClass, duration) => {
+    const newMessage = {...statusMessage,
+      message: message,
+      cssClass: cssClass
+    }
+    setStatusMessage(newMessage)
+    setTimeout(() => {
+      const resetStatusMessage = {...newMessage,
+        message: null}
+      setStatusMessage(resetStatusMessage)
+    },duration)
+  }
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -43,14 +77,8 @@ const App = () => {
           })
           setNewName('')
           setNewNumber('')
-          const newStatusMessage = {...statusMessage,
-            message: `The number for ${personToUpdate.name} has been changed to ${personToUpdate.number}`,
-            cssClass: 'success'}
-          setStatusMessage(newStatusMessage)
-          setTimeout(() => {
-            const resetStatusMessage = {...newStatusMessage, message: null}
-            setStatusMessage(resetStatusMessage)
-          }, 5000)
+          const messageToDisplay = `The number for ${updatedPerson.name} has been changed to ${updatedPerson.number}`
+          displayMessage(messageToDisplay, 'success', messageDuration)
       }
     } else {
       const personObject = {
@@ -65,36 +93,10 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
-      const newStatusMessage = {...statusMessage,
-        message: `${personObject.name} has been added to the phonebook with the number ${personObject.number}`,
-        cssClass: 'success'}
-      setStatusMessage(newStatusMessage)
-      setTimeout(() => {
-        const resetStatusMessage = {...newStatusMessage, message: null}
-        setStatusMessage(resetStatusMessage)
-      }, 5000)
+      const messageToDisplay = `${personObject.name} has been added to the phonebook with the number ${personObject.number}`
+      displayMessage(messageToDisplay, 'success', messageDuration)
     }
   }
-
-  const handleNameChange = (event) => {
-    //console.log(event.target.value)
-    setNewName(event.target.value)
-  }
-
-  const handleNumberChange = (event) => {
-    setNewNumber(event.target.value)
-  }
-
- 
-  const handleFilterChange = (event) => {
-    //console.log('filter:', event.target.value.toUpperCase())
-    setFilter(event.target.value)
-  }
-  
-
-  const personsToShow = (filter ==='')
-    ? persons
-    : persons.filter(person => person.name.toLocaleUpperCase().includes(filter.toUpperCase()))
 
   const deletePersonWithId = (id) => {
     //console.log(`person with id ${id} is being deleted`)
@@ -104,7 +106,15 @@ const App = () => {
         .remove(id)
         .then(deleted => {
             const remainingPersons = persons.filter(person => person.id !== deleted.id)
+            const messageToDisplay = `${deleted.name} has been removed from server`
+            displayMessage(messageToDisplay, 'success', messageDuration)
             setPersons(remainingPersons)
+        })
+        .catch(error => {
+          const messageToDisplay = `${person.name} has already been removed from server`
+          displayMessage(messageToDisplay, 'error', messageDuration)
+          const remainingPersons = persons.filter(x => x.id !== id)
+          setPersons(remainingPersons)
         })
     }
   }
