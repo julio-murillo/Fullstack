@@ -4,12 +4,15 @@ import PersonForm from "./components/PersonForm"
 import { useEffect } from 'react'
 import personService from './services/persons'
 import Person from './components/Person'
+import Notification from './components/Notification'
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('New name...')
   const [newNumber, setNewNumber] = useState('00-00-0000000')
   const [filter, setFilter] = useState('')
+  const [statusMessage, setStatusMessage] = useState({message: null, cssClass: 'success'})
 
   useEffect(() => {
     personService
@@ -40,6 +43,14 @@ const App = () => {
           })
           setNewName('')
           setNewNumber('')
+          const newStatusMessage = {...statusMessage,
+            message: `The number for ${personToUpdate.name} has been changed to ${personToUpdate.number}`,
+            cssClass: 'success'}
+          setStatusMessage(newStatusMessage)
+          setTimeout(() => {
+            const resetStatusMessage = {...newStatusMessage, message: null}
+            setStatusMessage(resetStatusMessage)
+          }, 5000)
       }
     } else {
       const personObject = {
@@ -54,6 +65,14 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+      const newStatusMessage = {...statusMessage,
+        message: `${personObject.name} has been added to the phonebook with the number ${personObject.number}`,
+        cssClass: 'success'}
+      setStatusMessage(newStatusMessage)
+      setTimeout(() => {
+        const resetStatusMessage = {...newStatusMessage, message: null}
+        setStatusMessage(resetStatusMessage)
+      }, 5000)
     }
   }
 
@@ -93,6 +112,10 @@ const App = () => {
   return(
     <>
       <h2>Phonebook</h2>
+      <Notification
+        message={statusMessage.message}
+        cssClass={statusMessage.cssClass}
+      />
       <Filter
         textToDisplay={'filter shown with '}
         textToFilterBy={filter}
