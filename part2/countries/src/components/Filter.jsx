@@ -1,5 +1,4 @@
-const Filter = ({textToDisplay, textToFilterBy, onChange}) =>
-(
+const Filter = ({textToDisplay, textToFilterBy, onChange}) => 
   <>
     {textToDisplay}<input id={'filter'}
       value={textToFilterBy}
@@ -7,6 +6,6 @@ const Filter = ({textToDisplay, textToFilterBy, onChange}) =>
       autoComplete='off'
       />
   </>
-)
+
 
 export default Filter
