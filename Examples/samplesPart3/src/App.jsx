@@ -6,7 +6,7 @@ import Notification from './components/Notification'
 import './index.css'
 
 const App = () => {
-  const [notes, setNotes] = useState([])
+  const [notes, setNotes] = useState(null)
   const [newNote, setNewNote] = useState('a new note...')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
@@ -64,6 +64,10 @@ const App = () => {
     ? notes
     : notes.filter (note => note.important)
 
+  if (!notes) {
+    return null
+  } else 
+  {
   return (
     <div>
       <h1>Notes</h1>
@@ -92,6 +96,7 @@ const App = () => {
       <Footer />
     </div>
   )
+}
 }
 
 export default App
