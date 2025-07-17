@@ -6,67 +6,68 @@ import Display from './components/Display'
 const App = () => {
 
   const [filter, setFilter] = useState('')
-  const [firstRun, setFirstRun] = useState(true)
   const [countries, setCountries] = useState([])
+  const [filteredCountries, setFilteredCountries] = useState([])
   const [currCountry, setCurrCountry] = useState(null)
 
-  //let alterCountries = []
-
-  const getCountries = () => {
-    if (firstRun) {
-      axios
+  useEffect(()=>{
+    axios
       .get('https://studies.cs.helsinki.fi/restcountries/api/all')
       .then(response => {
-        console.log('Response: ', response.data)
+        //console.log('Countries Fetched: ', response.data)
         const tempCountries = response.data.map(country => country.name.common)
         setCountries(tempCountries)
-        //alterCountries = tempCountries
-        //console.log('Country Names: ', countries)
       })
-      setFirstRun(false)
-    }
-  }
-
-  const getCountry = (countryName) => {
-    if (countryName) {
-      console.log (`Country to display: ${countryName}`)
-      axios
-      .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${countryName}`)
-      .then(response => {
-        const {name: {common}, capital, area, languages, flags } = response.data
-        const tempCountry = {common, capital, area, languages, flags }
-        setCurrCountry(tempCountry)
-        console.log('Response from invoking for one country: ', response.data)
-        console.log('Simplified data: ', currCountry)
+      .catch((error) => {
+        console.error('Error fetching countries:', error)
       })
-    }
-  }
-
-
-  getCountries()
+  }, [])
   
   useEffect(() => {
-    console.log('effect run, filter is now', filter)
+    //console.log('Filter upated - UseEffect working: ', filter)
 
     if (filter) {
-      console.log('Filter is not null')
+      //console.log('Filter is not null')
       const filteredCountries =
         countries.filter(country =>
-          country.toUpperCase().includes(filter.toLocaleUpperCase()))
+          country.toUpperCase().includes(filter.toUpperCase()))
+
       if (filteredCountries.length === 1)
       {
-        setCurrCountry(getCountry(filteredCountries[0]))
+        getCountry(filteredCountries[0])
+        setFilteredCountries(filteredCountries)
       } else {
-        setCurrCountry(getCountry(null))
+        setCurrCountry(null)
+        setFilteredCountries(filteredCountries)
       }
-      console.log('Matching countries :', filteredCountries.length, filteredCountries)
+      //console.log('Matching countries :', filteredCountries.length, filteredCountries)
+    } else {
+      setCurrCountry(null)
+      setFilteredCountries([])
     }
   }, [filter])
 
   const handleFilterChange = (event) => {
-    console.log('filter:', event.target.value.toUpperCase())
-    console.log('total number of countries availabe: ', countries.length)
+    //console.log('filter:', event.target.value.toUpperCase())
+    //console.log('total number of countries availabe: ', countries.length)
     setFilter(event.target.value)
+  }
+
+  const getCountry = (countryName) => {
+    if (countryName) {
+      //console.log (`Country to display: ${countryName}`)
+      axios
+      .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${countryName}`)
+      .then(response => {
+        console.log('Country details feched: ', response.data)
+        const {name: {common}, capital, area, languages, flags } = response.data
+        const tempCountry = {common, capital, area, languages, flags }
+        setCurrCountry(tempCountry)
+      })
+      .catch((error) => {
+        console.error('Error fetching country details:', error)
+      })
+    } 
   }
 
   return (
@@ -79,6 +80,7 @@ const App = () => {
       />
       <Display
         country = {currCountry}
+        filteredCountries={filteredCountries}
       />
     </div>
   )
