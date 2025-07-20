@@ -34,6 +34,7 @@ const App = () => {
 
       if (filteredCountries.length === 1)
       {
+        //setCurrCountry(filteredCountries[0])
         getCountry(filteredCountries[0])
         setFilteredCountries(filteredCountries)
       } else {
@@ -47,15 +48,20 @@ const App = () => {
     }
   }, [filter])
 
-  const handleFilterChange = (event) => {
+  const handleFilterChange = event => {
     //console.log('filter:', event.target.value.toUpperCase())
     //console.log('total number of countries availabe: ', countries.length)
     setFilter(event.target.value)
   }
+  
+  const selectCountry = country => {
+    //console.log('Should display info about ', country)
+    setFilter(country)
+  }
 
-  const getCountry = (countryName) => {
+  const getCountry = countryName => {
+    //console.log('getCountry being executed')
     if (countryName) {
-      //console.log (`Country to display: ${countryName}`)
       axios
       .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${countryName}`)
       .then(response => {
@@ -81,6 +87,7 @@ const App = () => {
       <Display
         country = {currCountry}
         filteredCountries={filteredCountries}
+        selectCountry={selectCountry}
       />
     </div>
   )

@@ -1,11 +1,12 @@
-const Display = ({country, filteredCountries}) =>
+const Display = ({country, filteredCountries, selectCountry}) =>
 {
     //const country = props.country
+    //console.log('Filtered countries :', filteredCountries)
 
     if (filteredCountries.length > 11)
     {
         return(
-            <div>Too many matches, specify another filter</div>
+            <div key={'Too many'}>Too many matches, specify another filter</div>
         )
     } else if (filteredCountries.length > 1 && filteredCountries.length <= 10)
     {
@@ -14,13 +15,15 @@ const Display = ({country, filteredCountries}) =>
             <div>
                 <br />
                 {
-                    filteredCountries.map(country =>
-                        (<div>{country}</div>)
-                        )
+                    filteredCountries.map(filteredCountry =>
+                        (<div key={filteredCountry}>
+                            {filteredCountry}<button onClick={() => selectCountry(filteredCountry)}>Show</button>
+                        </div>)
+                    )
                 }
             </div>
         )
-    } else if (filteredCountries.length = 0)
+    } else if (filteredCountries.length === 0)
     {
         return null
     } else if (country) {
