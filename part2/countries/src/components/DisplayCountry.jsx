@@ -1,4 +1,4 @@
-const Display = ({country, filteredCountries, selectCountry}) =>
+const DisplayCountry = ({country, filteredCountries, selectCountry}) =>
 {
     //const country = props.country
     //console.log('Filtered countries :', filteredCountries)
@@ -26,7 +26,9 @@ const Display = ({country, filteredCountries, selectCountry}) =>
     } else if (filteredCountries.length === 0)
     {
         return null
+
     } else if (country) {
+        console.log('Displaying the following country: ', country)
         return(
         <>
             <h2>{country.common}</h2>
@@ -44,4 +46,4 @@ const Display = ({country, filteredCountries, selectCountry}) =>
     return null;
 }
 
-export default Display
+export default DisplayCountry
