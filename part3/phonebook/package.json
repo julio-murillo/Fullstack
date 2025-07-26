@@ -1,0 +1,24 @@
+{
+  "name": "phonebook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/julio-murillo/Fullstack.git"
+  },
+  "author": "Julio Murillo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/julio-murillo/Fullstack/issues"
+  },
+  "homepage": "https://github.com/julio-murillo/Fullstack#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
