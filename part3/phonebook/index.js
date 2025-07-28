@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     { 
       "id": "1",
@@ -37,6 +39,15 @@ app.get('/api/persons/:id', (request, response) => {
   } else {
     response.status(404).end()
   }
+})
+
+app.delete('/api/persons/:id', (request, response) => {
+  const id = request.params.id
+  console.log(`Persons before deletion: ${JSON.stringify(persons)}`)
+  persons = persons.filter(person => person.id !== id)
+  console.log(`Persons after deletion: ${JSON.stringify(persons)}`)
+
+  response.status(204).end()
 })
 
 app.get('/info/', (request, response) => {

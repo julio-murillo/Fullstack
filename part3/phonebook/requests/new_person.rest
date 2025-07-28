@@ -5,3 +5,38 @@ POST http://localhost:3001/api/persons/
         "name": "Julio Murillo",
         "number": "+506-61853237"
     }
+
+###
+
+POST http://localhost:3001/api/persons/
+    Content-Type: application/json
+
+    {
+        "number": "+506-77778888"
+    }
+
+###
+
+POST http://localhost:3001/api/persons/
+    Content-Type: application/json
+
+    {
+        "name": "Catalina Canessa"
+    }
+
+###
+
+POST http://localhost:3001/api/persons/
+    Content-Type: application/json
+
+    {}
+
+###
+
+POST http://localhost:3001/api/persons/
+    Content-Type: application/json
+
+    {
+        "name": "Catalina Canessa",
+        "number": "+506-77778888"
+    }
