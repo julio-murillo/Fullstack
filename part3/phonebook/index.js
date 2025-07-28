@@ -1,10 +1,12 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 const minId = 1000
 const maxId = 1000000
 
 
 app.use(express.json())
+app.use(morgan('tiny'))
 
 let persons = [
     { 
