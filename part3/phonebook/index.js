@@ -58,10 +58,26 @@ const genId = () => Math.floor(Math.random() * (maxId - minId + 1) + minId)
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
+  if(!body.name) {
+    return response.status(400).json({
+      error: 'name missing'
+    })
+  } else if (!body.number) {
+    return response.status(400).json({
+      error: 'number missing'
+    })
+  }
+
   const person = {
     name : body.name,
     number: body.number,
     id: genId().toString()
+  }
+  
+  if (persons.find(person => person.name === body.name)) {
+    return response.status(400).json({
+      error: `${body.name} alredy exists in the phonebook`
+    })
   }
   
   persons = persons.concat(person)
