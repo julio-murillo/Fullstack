@@ -1,5 +1,8 @@
 const express = require('express')
 const app = express()
+const minId = 1000
+const maxId = 1000000
+
 
 app.use(express.json())
 
@@ -48,6 +51,22 @@ app.delete('/api/persons/:id', (request, response) => {
   console.log(`Persons after deletion: ${JSON.stringify(persons)}`)
 
   response.status(204).end()
+})
+
+const genId = () => Math.floor(Math.random() * (maxId - minId + 1) + minId)
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+
+  const person = {
+    name : body.name,
+    number: body.number,
+    id: genId().toString()
+  }
+  
+  persons = persons.concat(person)
+  
+  response.json(person)
 })
 
 app.get('/info/', (request, response) => {
