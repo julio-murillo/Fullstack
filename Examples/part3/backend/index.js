@@ -1,5 +1,30 @@
 const express = require('express')
+const cors = require('cors')
+
 const app = express()
+
+// CORS Middleware
+const corsOptions = {
+  origin: '*', //Allow all origins
+}
+
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Origin', 'https://legendary-journey-pppvrv7q9x3rq5r-5173.app.github.dev');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    return res.status(204).end();
+  }
+  next();
+});
+
+app.use(cors(corsOptions))
+
+app.use((req, res, next) => {
+  // Log response headers to debug CORS setup
+  console.log('Response headers:', res.getHeaders());
+  next();
+});
 
 let notes = [
   {

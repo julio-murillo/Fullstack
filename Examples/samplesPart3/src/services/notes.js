@@ -1,5 +1,6 @@
 import axios from "axios"
-const baseUrl = 'http://localhost:3001/notes'
+//const baseUrl = 'http://localhost:3001/api/notes'
+const baseUrl = 'https://legendary-journey-pppvrv7q9x3rq5r-3001.app.github.dev/api/notes'
 
 const getAll = () => {
     const request = axios.get(baseUrl)
