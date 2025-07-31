@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import Filter from "./components/Filter"
 import axios from 'axios'
-import DisplayCountry from './components/DisplayCountry'
-import DisplayWeather from './components/DisplayWeather'
+import Display from './components/Display'
 
 const App = () => {
 
@@ -11,7 +10,7 @@ const App = () => {
   const [filteredCountries, setFilteredCountries] = useState([])
   const [currCountry, setCurrCountry] = useState(null)
   const [currWeather, setCurrWeather] = useState(null)
-  const openWeatherAPIKey = import.meta.env.VITE_SOME_KEY
+  const openWeatherApiKey = '4e2b84ca38f0a0786621becdc7884ee0'
 
   useEffect(()=>{
     axios
@@ -38,8 +37,11 @@ const App = () => {
       if (filteredCountries.length === 1)
       {
         //setCurrCountry(filteredCountries[0])
-        getCountry(filteredCountries[0])
         setFilteredCountries(filteredCountries)
+        getCountry(filteredCountries[0])
+        //console.log('tempCountry value: ', tempCountry)
+        //getCityWeather(tempCountry.capital[0], tempCountry.cca2)
+        //getCityWeather(currCountry.capital, currCountry.cca2)
       } else {
         setCurrCountry(null)
         setCurrWeather(null)
@@ -66,15 +68,18 @@ const App = () => {
 
   const getCountry = countryName => {
     //console.log('getCountry being executed')
+
     if (countryName) {
       axios
       .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${countryName}`)
       .then(response => {
         console.log('Country details feched: ', response.data)
         const {name: {common}, cca2, capital, area, languages, flags } = response.data
-        const tempCountry = {common, cca2, capital, area, languages, flags }
+        const tempCountry = {common, cca2 ,capital, area, languages, flags }
+        console.log('TempCountry inside getCountry: ', tempCountry)
+        //return (tempCountry)
+        getCityWeather(tempCountry.capital[0], tempCountry.cca2)
         setCurrCountry(tempCountry)
-        getCountryWeather(tempCountry.capital[0], tempCountry.cca2)
       })
       .catch((error) => {
         console.error('Error fetching country details:', error)
@@ -82,23 +87,23 @@ const App = () => {
     } 
   }
 
-  const getCountryWeather = (cityName, countryCode) => {
-    if (cityName && countryCode){
+  const getCityWeather = (cityName, countryCode) => {
+    if (cityName) {
       axios
-      .get(`https://api.openweathermap.org/data/2.5/weather?q=${cityName},${countryCode}&APPID=${openWeatherAPIKey}`)
+      .get(`https://api.openweathermap.org/data/2.5/weather?q=${cityName},${countryCode}&appid=${openWeatherApiKey}`)
       .then(response => {
-        console.log('Wheather in ', cityName, ': ', response.data)
-        const {main: {temp}, wind: {speed}, weather, name} = response.data
-        const weatherData = {temp, speed, weather, name}
-        setCurrWeather (weatherData)
-        console.log (`Weather data in ${cityName}: ${weatherData.temp}`)
+        //console.log('Weather Info: ', response.data)
+        const {main: {temp}, weather: {icon}, wind: {speed}, name} = response.data
+        const tempWeather  = {temp, icon, speed, name}
+        setCurrWeather(tempWeather)
+        //return tempWeather
       })
       .catch((error) => {
-        console.error('Error fetching weather details:', error)
-        setCurrWeather(null)
+        console.error('Error fetching weather details: ', error)
       })
     }
   }
+
 
   return (
     <div>
@@ -108,13 +113,11 @@ const App = () => {
         textToFilterBy={filter}
         onChange={handleFilterChange}
       />
-      <DisplayCountry
+      <Display
         country = {currCountry}
+        weather={currWeather}
         filteredCountries={filteredCountries}
         selectCountry={selectCountry}
-      />
-      <DisplayWeather
-        weather = {currWeather}
       />
     </div>
   )
