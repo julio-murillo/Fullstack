@@ -1,9 +1,13 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 const app = express()
 const minId = 1000
 const maxId = 1000000
 
+const allowedOrigin = 'http://localhost:5173/'
+
+app.use(cors())
 
 app.use(express.json())
 

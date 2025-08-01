@@ -5,26 +5,26 @@ const app = express()
 
 // CORS Middleware
 const corsOptions = {
-  origin: '*', //Allow all origins
+  origin: 'http://localhost:5173', //Allow only request from the specified origin
 }
 
-app.use((req, res, next) => {
+{/*app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Origin', 'https://legendary-journey-pppvrv7q9x3rq5r-5173.app.github.dev');
+    res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     return res.status(204).end();
   }
   next();
-});
+})*/}
 
 app.use(cors(corsOptions))
 
-app.use((req, res, next) => {
+{/*app.use((req, res, next) => {
   // Log response headers to debug CORS setup
-  console.log('Response headers:', res.getHeaders());
-  next();
-});
+  console.log('Response headers:', res.getHeaders())
+  next()
+})*/}
 
 let notes = [
   {
@@ -113,7 +113,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-const PORT = 3001
+const PORT = process.env.port || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
