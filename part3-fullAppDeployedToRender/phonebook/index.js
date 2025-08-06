@@ -1,24 +1,16 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
-//const cors = require('cors')
 const app = express()
 const minId = 1000
 const maxId = 1000000
 
-//const allowedOrigin = 'http://localhost:5173'
-
-{/*const corsOptions = {
-  origin: allowedOrigin,
-  credentials: false
-}*/}
+const Person = require('./models/person')
 
 app.use(express.static('dist'))
 
-//app.use(cors(corsOptions))
-
 app.use(express.json())
 
-//app.use(morgan('tiny',))
 morgan.token('body', (req, res) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body')
 )
@@ -46,11 +38,14 @@ let persons = [
     }
 ]
 
-app.get('/api/persons/', (request, response) => {
-    response.json(persons)
+//retrieves all people from the DB
+app.get('/api/people', (request, response) => {
+  Person.find({}).then(people => {
+    response.json(people)
+  })
 })
 
-app.get('/api/persons/:id', (request, response) => {
+{/*app.get('/api/persons/:id', (request, response) => {
   const id = request.params.id
   const person = persons.find(person => person.id === id)
 
@@ -100,7 +95,7 @@ app.post('/api/persons', (request, response) => {
   persons = persons.concat(person)
   
   response.json(person)
-})
+})*/}
 
 app.get('/info/', (request, response) => {
     const people = persons.length
@@ -126,11 +121,7 @@ app.get('/info/', (request, response) => {
         `)
 })
 
-{/*app.get('/', (request, response) => {
-    response.send('<h1>This is the root.. nothing to see here!!!</h1>')
-})*/}
-
-const PORT = process.env. PORT || 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
 
     const serverTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone

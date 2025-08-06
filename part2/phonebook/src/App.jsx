@@ -2,13 +2,13 @@ import { useState } from 'react'
 import Filter from "./components/Filter"
 import PersonForm from "./components/PersonForm"
 import { useEffect } from 'react'
-import personService from './services/persons'
+import peopleService from './services/people'
 import Person from './components/Person'
 import Notification from './components/Notification'
 import './index.css'
 
 const App = () => {
-  const [persons, setPersons] = useState([])
+  const [people, setPeople] = useState([])
   const [newName, setNewName] = useState('New name...')
   const [newNumber, setNewNumber] = useState('00-00-0000000')
   const [filter, setFilter] = useState('')
@@ -16,10 +16,10 @@ const App = () => {
   const messageDuration = 3000
 
   useEffect(() => {
-    personService
+    peopleService
       .getAll()
-      .then(initialPersons => {
-        setPersons(initialPersons)
+      .then(initialPeople => {
+        setPeople(initialPeople)
       })
   },[])
 
@@ -39,9 +39,9 @@ const App = () => {
   }
   
 
-  const personsToShow = (filter ==='')
-    ? persons
-    : persons.filter(person => person.name.toLocaleUpperCase().includes(filter.toUpperCase()))
+  const poepleToShow = (filter ==='')
+    ? people
+    : people.filter(person => person.name.toLocaleUpperCase().includes(filter.toUpperCase()))
 
   const displayMessage = (message, cssClass, duration) => {
     const newMessage = {...statusMessage,
@@ -59,21 +59,21 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
     //console.log('button clicked', event.target)
-    if (persons.some(person => person.name === newName)) {
+    if (people.some(person => person.name === newName)) {
       //alert(`${newName} is already added to phonebook`)
       if (confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
         //console.log ('Value of newName ', newName)
         //console.log ('Values of newNumber ', newNumber)
-        const personToUpdate = persons.find(person => person.name === newName)
+        const personToUpdate = people.find(person => person.name === newName)
         //console.log ('Person to update ', personToUpdate)
         const id = personToUpdate.id
         //console.log ('ID value ', id)
         const updatedPerson = {...personToUpdate, number: newNumber}
 
-        personService
+        peopleService
           .update(id, updatedPerson)
           .then(returnedPerson => {
-            setPersons(persons.map(person => person.id === id ? returnedPerson : person))
+            setPeople(people.map(person => person.id === id ? returnedPerson : person))
           })
           setNewName('')
           setNewNumber('')
@@ -86,10 +86,10 @@ const App = () => {
         number: newNumber,
       }
 
-      personService
+      peopleService
         .create(personObject)
         .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson))
+          setPeople(people.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
         })
@@ -100,21 +100,21 @@ const App = () => {
 
   const deletePersonWithId = (id) => {
     //console.log(`person with id ${id} is being deleted`)
-    const person = persons.find(n => n.id === id)
+    const person = people.find(n => n.id === id)
     if (confirm(`Delete ${person.name}?`)) {
-      personService
+      peopleService
         .remove(id)
         .then(deleted => {
-            const remainingPersons = persons.filter(person => person.id !== deleted.id)
+            const remainingPeople = people.filter(person => person.id !== deleted.id)
             const messageToDisplay = `${deleted.name} has been removed from server`
             displayMessage(messageToDisplay, 'success', messageDuration)
-            setPersons(remainingPersons)
+            setPeople(remainingPeople)
         })
         .catch(error => {
           const messageToDisplay = `${person.name} has already been removed from server`
           displayMessage(messageToDisplay, 'error', messageDuration)
-          const remainingPersons = persons.filter(x => x.id !== id)
-          setPersons(remainingPersons)
+          const remainingPeople = people.filter(x => x.id !== id)
+          setPeople(remainingPeople)
         })
     }
   }
@@ -141,9 +141,10 @@ const App = () => {
       />
       <h3>Numbers</h3>
       <div>
-        {personsToShow.map(person => <Person key={person.id}
-          person={person}
-          deletePerson={() => deletePersonWithId(person.id)}
+        {poepleToShow
+          .map(person => <Person key={person.id}
+            person={person}
+            deletePerson={() => deletePersonWithId(person.id)}
         />)}
       </div>
     </>

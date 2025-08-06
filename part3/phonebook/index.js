@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 const app = express()
 const minId = 1000
 const maxId = 1000000
@@ -39,8 +40,11 @@ let persons = [
     }
 ]
 
-app.get('/api/persons/', (request, response) => {
+//retrieves all persons from the DB
+app.get('/api/persons', (request, response) => {
+  Person.find({}).then(persons => {
     response.json(persons)
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
