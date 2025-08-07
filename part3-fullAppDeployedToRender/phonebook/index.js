@@ -2,10 +2,9 @@ require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
-const minId = 1000
-const maxId = 1000000
 
 const Person = require('./models/person')
+const { default: mongoose } = require('mongoose')
 
 app.use(express.static('dist'))
 
@@ -45,29 +44,7 @@ app.get('/api/people', (request, response) => {
   })
 })
 
-{/*app.get('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  const person = persons.find(person => person.id === id)
-
-  if(person) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
-})
-
-app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  console.log(`Persons before deletion: ${JSON.stringify(persons)}`)
-  persons = persons.filter(person => person.id !== id)
-  console.log(`Persons after deletion: ${JSON.stringify(persons)}`)
-
-  response.status(204).end()
-})
-
-const genId = () => Math.floor(Math.random() * (maxId - minId + 1) + minId)
-
-app.post('/api/persons', (request, response) => {
+app.post('/api/people', (request, response) => {
   const body = request.body
 
   if(!body.name) {
@@ -80,22 +57,29 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  const person = {
+
+  Person.findOne({name: body.name})
+    .then((foundPerson) => {
+      if(foundPerson) {
+        return response.status(400).json({
+          error: `${body.name} alredy exists in the phonebook`
+        })
+      }  
+
+  //The person doesn't exist in the collection, we should do the insertion
+  const person = new Person ({
     name : body.name,
     number: body.number,
-    id: genId().toString()
-  }
-  
-  if (persons.find(person => person.name === body.name)) {
-    return response.status(400).json({
-      error: `${body.name} alredy exists in the phonebook`
+  })
+
+  return person.save()
+    .then((savedPerson) => {
+      console.log(`Person added: ${savedPerson}`)
+      response.status(201).json(savedPerson)
+      //mongoose.connection.close()
     })
-  }
-  
-  persons = persons.concat(person)
-  
-  response.json(person)
-})*/}
+  })
+})
 
 app.get('/info/', (request, response) => {
     const people = persons.length
