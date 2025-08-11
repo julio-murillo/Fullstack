@@ -45,9 +45,7 @@ app.delete('/api/people/:id', (request, response) => {
   response.status(204).end()*/}
 })
 
-const genId = () => Math.floor(Math.random() * (maxId - minId + 1) + minId)
-
-app.post('/api/persons', (request, response) => {
+app.post('/api/people', (request, response) => {
   const body = request.body
 
   if(!body.name) {
@@ -60,21 +58,20 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  const person = {
-    name : body.name,
-    number: body.number,
-    id: genId().toString()
-  }
+  const person = new Person({
+    name: body.name,
+    number: body.number
+  })
   
-  if (persons.find(person => person.name === body.name)) {
+  {/*if (persons.find(person => person.name === body.name)) {
     return response.status(400).json({
       error: `${body.name} alredy exists in the phonebook`
     })
-  }
-  
-  persons = persons.concat(person)
-  
-  response.json(person)
+  }*/}
+
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
 
 app.get('info/', (request, response) => {
@@ -119,7 +116,7 @@ app.get('info/', (request, response) => {
     response.send('<h1>This is the root.. nothing to see here!!!</h1>')
 })*/}
 
-const PORT=3001
+const PORT= process.env.PORT
 app.listen(PORT, () => {
   const serverTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
   console.log(`Server running on port ${PORT}`)
