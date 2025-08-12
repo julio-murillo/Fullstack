@@ -3,8 +3,6 @@ const express = require('express')
 const morgan = require('morgan')
 const Person = require('./models/person')
 const app = express()
-const minId = 1000
-const maxId = 1000000
 
 app.use(express.static('dist'))
 app.use(express.json())
@@ -36,13 +34,15 @@ app.get('/api/people/:id', (request, response) => {
 
 //deletes the person identified by 1d
 app.delete('/api/people/:id', (request, response) => {
-  console.log('Pending implementation using mongo DB')
-  {/*const id = request.params.id
-  console.log(`Persons before deletion: ${JSON.stringify(persons)}`)
-  persons = persons.filter(person => person.id !== id)
-  console.log(`Persons after deletion: ${JSON.stringify(persons)}`)
-
-  response.status(204).end()*/}
+  Person.findByIdAndDelete(request.params.id)
+    .then(deleted => {
+      console.log(`Deleted document: ${deleted}`)
+      response.status(200).json(deleted)
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(400).send({error: 'malformatted id'})
+    })
 })
 
 app.post('/api/people', (request, response) => {
@@ -111,10 +111,6 @@ app.get('info/', (request, response) => {
         console.log(error)
       })
 })
-
-{/*app.get('/', (request, response) => {
-    response.send('<h1>This is the root.. nothing to see here!!!</h1>')
-})*/}
 
 const PORT= process.env.PORT
 app.listen(PORT, () => {
