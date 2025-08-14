@@ -42,47 +42,66 @@ app.delete('/api/people/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/people', (request, response) => {
-  const body = request.body
+app.post('/api/people', (request, response, next) => {
+  //const body = request.body
+  const {name, number} = request.body
 
-  if(!body.name) {
+  if(!name) {
     return response.status(400).json({
       error: 'name missing'
     })
-  } else if (!body.number) {
+  } else if (!number) {
     return response.status(400).json({
       error: 'number missing'
     })
   }
 
-  const person = new Person({
-    name: body.name,
-    number: body.number
-  })
-  
-  {/*if (persons.find(person => person.name === body.name)) {
-    return response.status(400).json({
-      error: `${body.name} alredy exists in the phonebook`
+  Person.findOne({name})
+    .then(foundPerson => {
+      if (foundPerson) {
+        //the person exists, therefore we should update the number
+        return Person.findByIdAndUpdate(
+          foundPerson.id, {number},
+          {new: true}
+        )
+        .then(updatedPerson => {
+          return response.status(200).json(updatedPerson)
+        })
+      } else {
+        //the person does not exist, must be added to the collection
+        const person = new Person({
+          name: name,
+          number: number
+        })
+        return person.save().then(savedPerson => {
+          response.json(savedPerson)
+        })
+      }
     })
-  }*/}
-
-  person.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
+    .catch(error => next(error))
 })
 
-app.get('info/', (request, response) => {
+//update a person by id
+app.put('/api/people/:id', (request, response, next) => {
+  const {name, number} = request.body
+  const {id} = request.params
+
+  //update only the number... per the logic of the app, the name cannot be updated
+  Person.findByIdAndUpdate(id, {number}, {new: true})
+  .then(updatedPerson => {
+    if (!updatedPerson) {
+      //The person does not exist... 
+      return response.status(404).send({error: 'Person not found'})
+    }
+    response.json(updatedPerson)
+  })
+  .catch(error => next(error))
+})
+
+app.get('/info', (request, response) => {
   Person.countDocuments({})
-      .then((count) => {
-        console.log(`There's ${count} people in the collection`)
-        peopleCount = count
-        console.log(`Value assigned to var peopleCount is: ${peopleCount}`)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-    
-    const options = {
+    .then((peopleCount) => {
+      const options = {
         weekday: 'short',
         year: 'numeric',
         month: 'short',
@@ -92,25 +111,23 @@ app.get('info/', (request, response) => {
         second: 'numeric',
         hour12: false,
         timeZoneName: "longOffset"
-    }
-    const formatter = Intl.DateTimeFormat([], options)
-    const timeZoneName = Intl.DateTimeFormat([], {timeZoneName: 'long'})
-      .formatToParts().find(part => part.type === 'timeZoneName').value
-
-    Person.countDocuments({})
-      .then((count) => {
-        response.send(`
-          <h3>Phonebook has info for ${peopleCount} people</h3>
-          <h3>${formatter.format(Date.now())} (${timeZoneName})</h3>
-        `)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+      }
+      const formatter = Intl.DateTimeFormat([], options)
+      const timeZoneName = Intl.DateTimeFormat([], {timeZoneName: 'long'})
+        .formatToParts().find(part => part.type === 'timeZoneName').value
+      response.send(`
+        <h3>Phonebook has info for ${peopleCount} people</h3>
+        <h3>${formatter.format(Date.now())} (${timeZoneName})</h3>
+      `)
+    })
+    .catch ((error) => {
+      console.log(error)
+      response.status(500).send({error: 'failed to fetch phonebook info'})
+    })
 })
 
 const unknownEndPoint = (request, response) => {
-  response.status(404).send({error: 'unknown endpoint'})
+  response.status(404).json({error: 'unknown endpoint'})
 }
 
 app.use(unknownEndPoint)
