@@ -20,16 +20,13 @@ app.get('/api/people', (request, response) => {
 })
 
 //retrieves the person identified by id
-app.get('/api/people/:id', (request, response) => {
-  console.log('Pending implementation using mongo DB')
-  {/*const id = request.params.id
-  const person = persons.find(person => person.id === id)
-
-  if(person) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }*/}
+app.get('/api/people/:id', (request, response, next) => {
+  Person.findById(request.params.id)
+    .then(foundPerson => {
+      console.log(`Found person: ${JSON.stringify(foundPerson)}`)
+      response.status(200).json(foundPerson)
+    })
+    .catch(error => next(error))
 })
 
 //deletes the person identified by 1d
