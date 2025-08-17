@@ -50,3 +50,11 @@ POST http://localhost:3001/api/people/
         "number": "+506 44444444"
     }
 
+###
+POST http://localhost:3001/api/people/
+    Content-Type: application/json
+
+    {
+        "name": "X",
+        "number": "+506 5555555"
+    }

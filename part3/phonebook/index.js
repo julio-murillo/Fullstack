@@ -39,15 +39,17 @@ app.delete('/api/people/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/people', (request, response, next) => {
+{/*app.post('/api/people', (request, response, next) => {
   //const body = request.body
   const {name, number} = request.body
 
-  if(!name) {
+  {/*if(!name) {
     return response.status(400).json({
       error: 'name missing'
     })
-  } else if (!number) {
+  } else
+    
+  if (!number) {
     return response.status(400).json({
       error: 'number missing'
     })
@@ -59,7 +61,7 @@ app.post('/api/people', (request, response, next) => {
         //the person exists, therefore we should update the number
         return Person.findByIdAndUpdate(
           foundPerson.id, {number},
-          {new: true}
+          {new: true, runValidators: true} //validation enforced!!!
         )
         .then(updatedPerson => {
           return response.status(200).json(updatedPerson)
@@ -76,6 +78,18 @@ app.post('/api/people', (request, response, next) => {
       }
     })
     .catch(error => next(error))
+})*/}
+
+app.post('/api/people', (request, response, next) => {
+  const {name, number} = request.body
+
+  const person = new Person({name, number})
+  return person.save()
+    .then(savedPerson => {
+      console.log('Saving the person ', JSON.stringify(savedPerson))
+      response.json(savedPerson)
+    })
+    .catch(error => next(error))
 })
 
 //update a person by id
@@ -84,11 +98,11 @@ app.put('/api/people/:id', (request, response, next) => {
   const {id} = request.params
 
   //update only the number... per the logic of the app, the name cannot be updated
-  Person.findByIdAndUpdate(id, {number}, {new: true})
+  Person.findByIdAndUpdate(id, {number}, {new: true, runValidators: true, context: 'query'})
   .then(updatedPerson => {
     if (!updatedPerson) {
       //The person does not exist... 
-      return response.status(404).send({error: 'Person not found'})
+      return response.status(404).json({error: 'Person not found'})
     }
     response.json(updatedPerson)
   })
@@ -130,11 +144,17 @@ const unknownEndPoint = (request, response) => {
 app.use(unknownEndPoint)
 
 const errorHadler = (error, request, response, next) => {
-  console.error(error.message)
+  console.error(error.name, ' / ',error.message)
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id'})
+  } else if (error.name === 'ValidationError') {
+    console.log('Validation error: ', error.message)
+    return response.status(400).json({error: error.message})
   }
+
+  next(error)
+
 }
 
 app.use(errorHadler)
