@@ -39,8 +39,7 @@ app.delete('/api/people/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-{/*app.post('/api/people', (request, response, next) => {
-  //const body = request.body
+app.post('/api/people', (request, response, next) => {
   const {name, number} = request.body
 
   {/*if(!name) {
@@ -48,13 +47,15 @@ app.delete('/api/people/:id', (request, response, next) => {
       error: 'name missing'
     })
   } else
-    
+  
+
   if (!number) {
     return response.status(400).json({
       error: 'number missing'
     })
   }
-
+  */}
+  
   Person.findOne({name})
     .then(foundPerson => {
       if (foundPerson) {
@@ -78,9 +79,9 @@ app.delete('/api/people/:id', (request, response, next) => {
       }
     })
     .catch(error => next(error))
-})*/}
+})
 
-app.post('/api/people', (request, response, next) => {
+{/*app.post('/api/people', (request, response, next) => {
   const {name, number} = request.body
 
   const person = new Person({name, number})
@@ -90,7 +91,7 @@ app.post('/api/people', (request, response, next) => {
       response.json(savedPerson)
     })
     .catch(error => next(error))
-})
+})*/}
 
 //update a person by id
 app.put('/api/people/:id', (request, response, next) => {

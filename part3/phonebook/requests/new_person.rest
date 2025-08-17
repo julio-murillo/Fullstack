@@ -55,6 +55,6 @@ POST http://localhost:3001/api/people/
     Content-Type: application/json
 
     {
-        "name": "X",
+        "name": "W",
         "number": "+506 5555555"
     }

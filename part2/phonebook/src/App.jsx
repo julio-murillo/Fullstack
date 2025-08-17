@@ -92,9 +92,12 @@ const App = () => {
           setPeople(people.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+          const messageToDisplay = `${personObject.name} has been added to the phonebook with the number ${personObject.number}`
+          displayMessage(messageToDisplay, 'success', messageDuration)
         })
-      const messageToDisplay = `${personObject.name} has been added to the phonebook with the number ${personObject.number}`
-      displayMessage(messageToDisplay, 'success', messageDuration)
+        .catch(error => {
+          displayMessage(error.response?.data?.error, 'error', messageDuration)
+        })
     }
   }
 
