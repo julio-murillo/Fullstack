@@ -1,5 +1,0 @@
-GET http://localhost:3001/api/people
-
-###
-
-GET https://part3-hq67.onrender.com/api/persons
