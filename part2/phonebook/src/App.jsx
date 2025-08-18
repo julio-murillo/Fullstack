@@ -74,11 +74,14 @@ const App = () => {
           .update(id, updatedPerson)
           .then(returnedPerson => {
             setPeople(people.map(person => person.id === id ? returnedPerson : person))
+            setNewName('')
+            setNewNumber('')
+            const messageToDisplay = `The number for ${updatedPerson.name} has been changed to ${updatedPerson.number}`
+            displayMessage(messageToDisplay, 'success', messageDuration)
           })
-          setNewName('')
-          setNewNumber('')
-          const messageToDisplay = `The number for ${updatedPerson.name} has been changed to ${updatedPerson.number}`
-          displayMessage(messageToDisplay, 'success', messageDuration)
+          .catch(error => {
+            displayMessage(error.response?.data?.error, 'error', messageDuration)
+          })
       }
     } else {
       const personObject = {
