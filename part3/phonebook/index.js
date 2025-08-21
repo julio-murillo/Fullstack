@@ -40,14 +40,14 @@ app.delete('/api/people/:id', (request, response, next) => {
 })
 
 app.post('/api/people', (request, response, next) => {
-  const {name, number} = request.body
+  const { name, number } = request.body
 
   {/*if(!name) {
     return response.status(400).json({
       error: 'name missing'
     })
   } else
-  
+
 
   if (!number) {
     return response.status(400).json({
@@ -55,18 +55,18 @@ app.post('/api/people', (request, response, next) => {
     })
   }
   */}
-  
-  Person.findOne({name})
+
+  Person.findOne({ name })
     .then(foundPerson => {
       if (foundPerson) {
         //the person exists, therefore we should update the number
         return Person.findByIdAndUpdate(
-          foundPerson.id, {number},
-          {new: true, runValidators: true} //validation enforced!!!
+          foundPerson.id, { number },
+          { new: true, runValidators: true } //validation enforced!!!
         )
-        .then(updatedPerson => {
-          return response.status(200).json(updatedPerson)
-        })
+          .then(updatedPerson => {
+            return response.status(200).json(updatedPerson)
+          })
       } else {
         //the person does not exist, must be added to the collection
         const person = new Person({
@@ -95,19 +95,19 @@ app.post('/api/people', (request, response, next) => {
 
 //update a person by id
 app.put('/api/people/:id', (request, response, next) => {
-  const {name, number} = request.body
-  const {id} = request.params
+  const { name, number } = request.body
+  const { id } = request.params
 
   //update only the number... per the logic of the app, the name cannot be updated
-  Person.findByIdAndUpdate(id, {number}, {new: true, runValidators: true, context: 'query'})
-  .then(updatedPerson => {
-    if (!updatedPerson) {
-      //The person does not exist... 
-      return response.status(404).json({error: 'Person not found'})
-    }
-    response.json(updatedPerson)
-  })
-  .catch(error => next(error))
+  Person.findByIdAndUpdate(id, { number }, { new: true, runValidators: true, context: 'query' })
+    .then(updatedPerson => {
+      if (!updatedPerson) {
+      //The person does not exist...
+        return response.status(404).json({ error: 'Person not found' })
+      }
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
 })
 
 app.get('/info', (request, response) => {
@@ -122,10 +122,10 @@ app.get('/info', (request, response) => {
         minute: 'numeric',
         second: 'numeric',
         hour12: false,
-        timeZoneName: "longOffset"
+        timeZoneName: 'longOffset'
       }
       const formatter = Intl.DateTimeFormat([], options)
-      const timeZoneName = Intl.DateTimeFormat([], {timeZoneName: 'long'})
+      const timeZoneName = Intl.DateTimeFormat([], { timeZoneName: 'long' })
         .formatToParts().find(part => part.type === 'timeZoneName').value
       response.send(`
         <h3>Phonebook has info for ${peopleCount} people</h3>
@@ -134,12 +134,12 @@ app.get('/info', (request, response) => {
     })
     .catch ((error) => {
       console.log(error)
-      response.status(500).send({error: 'failed to fetch phonebook info'})
+      response.status(500).send({ error: 'failed to fetch phonebook info' })
     })
 })
 
 const unknownEndPoint = (request, response) => {
-  response.status(404).json({error: 'unknown endpoint'})
+  response.status(404).json({ error: 'unknown endpoint' })
 }
 
 app.use(unknownEndPoint)
@@ -148,10 +148,10 @@ const errorHadler = (error, request, response, next) => {
   console.error(error.name, ' / ',error.message)
 
   if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id'})
+    return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
     console.log('Validation error: ', error.message)
-    return response.status(400).json({error: error.message})
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)
