@@ -1,0 +1,21 @@
+POST http://localhost:3003/api/blogs/
+    Content-Type: application/json
+
+    {
+        "title": "Test blog",
+        "author": "Julio Murillo",
+        "url": "https://myblog.com",
+        "likes": 1500
+    }
+
+###
+POST http://localhost:3003/api/blogs/
+    Content-Type: application/json
+
+    {
+        "title": "Test blog 2",
+        "author": "Kathy Canessa",
+        "url": "https://herblog.com",
+        "likes": 1800
+    }
+
