@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
+const logger = require('./utils/logger')
 
 const app = express()
 
@@ -35,5 +36,5 @@ app.post('/api/blogs', (request, response) => {
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+    logger.info(`Server running on port ${PORT}`)
 })
