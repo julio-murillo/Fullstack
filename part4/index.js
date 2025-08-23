@@ -7,20 +7,11 @@ const logger = require('./utils/logger')
 
 const app = express()
 
-{/*const blogSchema = mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number,
-})*/}
+app.use(express.json())
 
-//const Blog = mongoose.model('Blog', blogSchema)
 
-const mongoUrl = config.MONGODB_URI
+//const mongoUrl = config.MONGODB_URI
 
-//Blog.mongoose.connect(mongoUrl)
-
-//mongoose.connect(mongoUrl)
 mongoose
   .connect(config.MONGODB_URI)
   .then(() => {
@@ -45,6 +36,28 @@ app.post('/api/blogs', (request, response) => {
     response.status(201).json(result)
   })
 })
+
+const unknownEndPoint = (request, response) => {
+  response.status(404).json({error: 'unknown endpoint'})
+}
+
+app.use(unknownEndPoint)
+
+const errorHadler = (error, request, response, next) => {
+  console.error(error.name, ' / ',error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id'})
+  } else if (error.name === 'ValidationError') {
+    console.log('Validation error: ', error.message)
+    return response.status(400).json({error: error.message})
+  }
+
+  next(error)
+
+}
+
+app.use(errorHadler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
