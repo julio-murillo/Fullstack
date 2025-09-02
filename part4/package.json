@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node --watch index.js",
-    "test": "node --test",
+    "start": "corss-env NODE_ENV=production node index.js",
+    "dev": "corss-env NODE_ENV=development node --watch index.js",
+    "test": "corss-env NODE_ENV=test node --test",
     "lint": "eslint ."
   },
   "repository": {
@@ -16,6 +16,7 @@
   "author": "Julio Murillo",
   "license": "MIT",
   "dependencies": {
+    "cross-env": "^10.0.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "lodash": "^4.17.21",
