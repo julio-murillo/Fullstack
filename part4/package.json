@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "corss-env NODE_ENV=production node index.js",
-    "dev": "corss-env NODE_ENV=development node --watch index.js",
-    "test": "corss-env NODE_ENV=test node --test",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development node --watch index.js",
+    "test": "cross-env NODE_ENV=test node --test",
     "lint": "eslint ."
   },
   "repository": {
@@ -26,6 +26,7 @@
     "@eslint/js": "^9.34.0",
     "@stylistic/eslint-plugin": "^5.2.3",
     "eslint": "^9.34.0",
-    "globals": "^16.3.0"
+    "globals": "^16.3.0",
+    "supertest": "^7.1.4"
   }
 }
