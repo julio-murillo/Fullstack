@@ -23,6 +23,18 @@ test ('blogs are returned as json and the right number of blogs is returned', as
   assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
+test ('the unique identifier property of the blog post is named id', async () => {
+  const response = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const blogs = response.body
+  const blog = blogs[0]
+
+  assert.ok(blog.id, 'Expects blog.id to be defined')
+})
+
 
 after(async () => {
   await mongoose.connection.close()
