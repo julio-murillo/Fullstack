@@ -40,3 +40,14 @@ POST http://localhost:3003/api/blogs/
         "url": "https://theblog.com/Matias",
         "likes": 5300
     }
+
+###
+POST http://localhost:3003/api/blogs/
+    Content-Type: application/json
+
+    {
+        "title": "Test blog W",
+        "author": "Camila Murillo Canessa",
+        "url": "https://theblog.com/CamiW",
+        "likes": 7300
+    }

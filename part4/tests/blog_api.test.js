@@ -35,6 +35,35 @@ test ('the unique identifier property of the blog post is named id', async () =>
   assert.ok(blog.id, 'Expects blog.id to be defined')
 })
 
+test ('making a post to /api/blogs creates a new post', async () => {
+  const newBlog = {
+    title: 'Fake blog title',
+    author: 'Fake blog author',
+    url: 'fakeblog.com',
+    likes: 10
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  const found = response.body.find(
+    blog =>
+      blog.title === newBlog.title &&
+      blog.author === newBlog.author &&
+      blog.url === newBlog.url &&
+      blog.likes === newBlog.likes
+  )
+
+  assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
+
+  assert.ok(found, 'The inserted blog was not found')
+})
+
 
 after(async () => {
   await mongoose.connection.close()
