@@ -64,6 +64,29 @@ test ('making a post to /api/blogs creates a new post', async () => {
   assert.ok(found, 'The inserted blog was not found')
 })
 
+test ('if the likes property is missing, it defaults to 0', async () => {
+  const newBlog = {
+    title: 'Fake blog title 2',
+    author: 'Fake blog author 2',
+    url: 'fakeblog2.com'
+  }
+
+  const postResponse = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const createdBlog = postResponse.body
+
+  console.log('Created Blog', createdBlog)
+
+  const retrievedBlog = await api.get(`/api/blogs/${createdBlog.id}`)
+
+  console.log('Blog retrieved from the BD', retrievedBlog )
+
+  assert.strictEqual(retrievedBlog.body.likes, 0)
+})
 
 after(async () => {
   await mongoose.connection.close()

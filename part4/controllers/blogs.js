@@ -10,6 +10,16 @@ blogsRouter.get('/', async (req, res) => {
   }
 })
 
+blogsRouter.get('/:id', async (req, res) => {
+  const blog = await Blog.findById(req.params.id)
+
+  if (blog) {
+    res.status(200).json(blog)
+  } else {
+    res.status(404).end()
+  }
+})
+
 blogsRouter.post('/', async (req, res) => {
   const { title,
     author,
@@ -21,7 +31,7 @@ blogsRouter.post('/', async (req, res) => {
     title: title,
     author: author,
     url: url,
-    likes: likes
+    likes: likes || 0
   })
 
   const savedBlog = await blog.save()
