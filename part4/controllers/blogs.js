@@ -27,6 +27,10 @@ blogsRouter.post('/', async (req, res) => {
     likes
   } = req.body
 
+  if ((!title) || (!author)) {
+    return res.status(400).end()
+  }
+
   const blog = new Blog({
     title: title,
     author: author,
@@ -37,11 +41,6 @@ blogsRouter.post('/', async (req, res) => {
   const savedBlog = await blog.save()
   res.status(201).json(savedBlog)
 
-  {/*blog.save()
-    .then(savedBlog => {
-      res.status(201).json(savedBlog)
-    })
-    .catch(error => next(error))*/}
 })
 
 module.exports = blogsRouter

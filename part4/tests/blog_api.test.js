@@ -1,5 +1,5 @@
 const assert = require('node:assert')
-const { test, after, beforeEach } = require('node:test')
+const { test, describe, after, beforeEach } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
@@ -13,79 +13,102 @@ beforeEach(async () => {
   await Blog.deleteMany({})
   await Blog.insertMany(helper.initialBlogs)
 })
+describe ('blogs', () => {
+  test ('blogs are returned as json and the right number of blogs is returned', async () => {
+    const response = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
-test ('blogs are returned as json and the right number of blogs is returned', async () => {
-  const response = await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+    assert.strictEqual(response.body.length, helper.initialBlogs.length)
+  })
 
-  assert.strictEqual(response.body.length, helper.initialBlogs.length)
-})
+  test ('the unique identifier property of the blog post is named id', async () => {
+    const response = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
-test ('the unique identifier property of the blog post is named id', async () => {
-  const response = await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+    const blogs = response.body
+    const blog = blogs[0]
 
-  const blogs = response.body
-  const blog = blogs[0]
+    assert.ok(blog.id, 'Expects blog.id to be defined')
+  })
 
-  assert.ok(blog.id, 'Expects blog.id to be defined')
-})
+  test ('making a post to /api/blogs creates a new post', async () => {
+    const newBlog = {
+      title: 'Fake blog title',
+      author: 'Fake blog author',
+      url: 'fakeblog.com',
+      likes: 10
+    }
 
-test ('making a post to /api/blogs creates a new post', async () => {
-  const newBlog = {
-    title: 'Fake blog title',
-    author: 'Fake blog author',
-    url: 'fakeblog.com',
-    likes: 10
-  }
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+    const response = await api.get('/api/blogs')
 
-  const response = await api.get('/api/blogs')
-
-  const found = response.body.find(
-    blog =>
-      blog.title === newBlog.title &&
+    const found = response.body.find(
+      blog =>
+        blog.title === newBlog.title &&
       blog.author === newBlog.author &&
       blog.url === newBlog.url &&
       blog.likes === newBlog.likes
-  )
+    )
 
-  assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
+    assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
 
-  assert.ok(found, 'The inserted blog was not found')
-})
+    assert.ok(found, 'The inserted blog was not found')
+  })
 
-test ('if the likes property is missing, it defaults to 0', async () => {
-  const newBlog = {
-    title: 'Fake blog title 2',
-    author: 'Fake blog author 2',
-    url: 'fakeblog2.com'
-  }
+  test ('if the likes property is missing, it defaults to 0', async () => {
+    const newBlog = {
+      title: 'Fake blog title 2',
+      author: 'Fake blog author 2',
+      url: 'fakeblog2.com'
+    }
 
-  const postResponse = await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+    const postResponse = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
-  const createdBlog = postResponse.body
+    const createdBlog = postResponse.body
 
-  console.log('Created Blog', createdBlog)
+    const retrievedBlog = await api.get(`/api/blogs/${createdBlog.id}`)
 
-  const retrievedBlog = await api.get(`/api/blogs/${createdBlog.id}`)
+    assert.strictEqual(retrievedBlog.body.likes, 0)
+  })
 
-  console.log('Blog retrieved from the BD', retrievedBlog )
+  test ('if the title property is missing status 400 Bad Request is returned', async () => {
+    const newBlog = {
+      author: 'Blog with no title',
+      url: 'noTitleBlog.com',
+      likes: 4
+    }
 
-  assert.strictEqual(retrievedBlog.body.likes, 0)
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+  })
+
+  test ('if the author property is missing status 400 Bad Request is returned', async () => {
+    const newBlog = {
+      title: 'Blog with no author',
+      url: 'noAuthorBlog.com',
+      likes: 6
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+  })
 })
 
 after(async () => {
