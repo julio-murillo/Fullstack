@@ -47,10 +47,14 @@ const nonExistingId = async () => {
 }
 
 const blogsInDb = async () => {
-  const blogs = Blog.find({})
+  const blogs = await Blog.find({})
   return blogs.map(blog => blog.toJSON())
 }
 
+const randomIndex = () => {
+  return Math.floor(Math.random() * (initialBlogs.length))
+}
+
 module.exports = {
-  initialBlogs, nonExistingId, blogsInDb
+  initialBlogs, nonExistingId, blogsInDb, randomIndex
 }
